@@ -20,9 +20,10 @@ let storage = multer.diskStorage({
 let upload = multer({
     storage: storage,
     fileFilter: function(req, file, cb) {
-        if (file.mimetype !== 'image/png' && file.mimetype !== 'image/gif' && file.mimetype !== 'image/jpeg') 
-        {
+        if (file.mimetype !== 'image/png' && file.mimetype !== 'image/gif' && file.mimetype !== 'image/jpeg') {
+            //req.fileValidationError = 'Only image files are allowed!';
             return cb('Only image files are allowed!', false);
+            cb(null, false);
         } else {
             cb(null, true);
         }
@@ -47,6 +48,9 @@ app.get('/api', function (req, res) {
  
 app.post('/api/upload', upload.single('attachment'), function (req, res) {
     if (!req.file) {
+        // if(req.fileValidationError) {
+
+        // }
         console.log("No file received");
         return res.send({
           success: false
