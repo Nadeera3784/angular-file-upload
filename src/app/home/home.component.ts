@@ -1,7 +1,8 @@
-import { Component, OnInit, Injectable, AfterContentChecked, AfterViewChecked,
-  DoCheck} from '@angular/core';
-import { Observable } from 'rxjs';
-import { HttpClient , HttpHeaders} from '@angular/common/http';
+import { Component, OnInit, Injectable, AfterContentChecked, AfterViewChecked, DoCheck} from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { HttpEventType, HttpErrorResponse} from '@angular/common/http';
+import {UploadService} from '../home/upload.service';
+import {catchError, map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -12,11 +13,11 @@ import { HttpClient , HttpHeaders} from '@angular/common/http';
 export class HomeComponent implements OnInit{
 
 
-  constructor(private http: HttpClient){
+  constructor(private uploadService: UploadService){
    
   }
 
-  uploadedFiles: any;
+  uploadedFile: any;
 
   loading: boolean = false;
 
@@ -24,22 +25,29 @@ export class HomeComponent implements OnInit{
 
   fileEvent(event){
 
-      this.uploadedFiles = event.target.files[0];
+      this.uploadedFile = event.target.files[0];
 
       let formData = new FormData();
 
-      formData.append("attachment",  this.uploadedFiles);
+      formData.append("attachment",  this.uploadedFile);
       
       this.loading = true;
-      
-      this.http.post(this.base_url+'/api/upload', formData, {observe: 'response'}).subscribe(
-        (response) => {
-           console.log('sucess response' +response);
-        },
-        (error) => {
-          console.log('error response' + error.status);  
+
+      this.uploadService.upload(formData).pipe(
+        map(response => {
           this.loading = false;
-      });
+          console.log(response.body);
+          event.target.value = "";
+        }),
+        catchError((error: HttpErrorResponse) => {
+          return of(`Upload failed: ${formData}`);
+        })).subscribe((eventx: any) => {
+          this.loading = false;
+          //console.log('subscribe' + eventx);
+        });
+      
+
+
   }
 
   ngOnInit(){
