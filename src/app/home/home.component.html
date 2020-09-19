@@ -1,1 +1,13 @@
 <p>home works!</p>
+
+<form  (ngSubmit)="onSubmit()">
+    Select image to upload:
+    <div *ngIf="loading">uploading...</div>
+    <input type="file" name="photo" id="photo"  (change)="fileEvent($event)">
+    <input type="submit" value="Upload Image" name="submit">
+</form>
+
+<input type="text" name="value" [(ngModel)]="value">
+<p> You entered {{value}}</p>
+
+
