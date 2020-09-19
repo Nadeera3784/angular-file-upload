@@ -14,7 +14,7 @@ export class UploadService {
     public upload(formData) {
         return this.httpClient.post<any>(this.base_url+'/api/upload', formData, {
               reportProgress: true,
-              observe: 'events'
+              observe: 'response'
         });
     }         
 }
