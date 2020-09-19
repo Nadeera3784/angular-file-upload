@@ -12,8 +12,6 @@ import { HttpClient , HttpHeaders} from '@angular/common/http';
 export class HomeComponent implements OnInit{
 
 
-  value : string = "";
-
   constructor(private http: HttpClient){
    
   }
