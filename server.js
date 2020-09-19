@@ -45,7 +45,7 @@ app.get('/api', function (req, res) {
   res.end('file catcher example');
 });
  
-app.post('/api/upload', upload.single('photo'), function (req, res) {
+app.post('/api/upload', upload.single('attachment'), function (req, res) {
     if (!req.file) {
         console.log("No file received");
         return res.send({
