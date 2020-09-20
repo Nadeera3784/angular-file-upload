@@ -27,7 +27,17 @@ export class Nguploader {
     //console.log(files.files[0]);
 
     if (this.allowed_file_types instanceof Array) {
-       console.log(this.allowed_file_types);
+      if(this.allowed_file_types.includes(files.files[0].type)){
+          alert('go');
+      }else{
+        let templateElement = document.createElement("div");
+        templateElement.style.color = 'red';
+        templateElement.id = "error";
+        let txt = document.createTextNode("This file type is not supported");
+        templateElement.appendChild(txt);
+        this.element.nativeElement.after(templateElement);
+      }
+
     }
 
   }
