@@ -7,13 +7,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 
-import { PaintGreenDirective } from '../app/uploader/green.directive';
+import { Nguploader } from '../app/uploader/nguploader';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    PaintGreenDirective
+    Nguploader
   ],
   imports: [
     BrowserModule,

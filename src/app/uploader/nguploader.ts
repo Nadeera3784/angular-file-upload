@@ -2,13 +2,13 @@ import { Directive, ElementRef , HostListener, Input} from '@angular/core';
 
 @Directive({
 
-  selector: '[appPaintGreen]'
+  selector: '[Nguploader]'
 
 })
 
-export class PaintGreenDirective {
+export class Nguploader {
 
-  @Input('allowed') public option:any;   
+  @Input('allowed') public allowed_file_types:any;   
 
   private element:ElementRef;
 
@@ -23,7 +23,12 @@ export class PaintGreenDirective {
     let files = this.element.nativeElement;
     //let files = this.uploader.isHTML5 ? this.element.nativeElement[0].files : this.element.nativeElement[0]
     //console.log(files.files[0]);
-    console.log(this.option);
+    //console.log(this.allowed_file_types);
+    //console.log(files.files[0]);
+
+    if (this.allowed_file_types instanceof Array) {
+       console.log(this.allowed_file_types);
+    }
 
   }
 
