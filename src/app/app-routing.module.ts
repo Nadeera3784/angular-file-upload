@@ -2,9 +2,11 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule, ExtraOptions} from '@angular/router';
 
 import {HomeComponent} from '../app/home/home.component';
+import {CalendarComponent} from '../app/calendar/calendar.component';
 
 const routes: Routes = [
   {path: '' , component: HomeComponent},
+  {path: 'calendar' , component: CalendarComponent},
 ];
 
 const config: ExtraOptions = {
