@@ -9,11 +9,11 @@ const router = express.Router();
 //const upload = require("./uploadMiddleware.js"); 
 const AWS = require('aws-sdk');
 
-const BUCKET_NAME = "epanthiyabucket";
+const BUCKET_NAME = "<>t";
 
 AWS.config.update({
-  accessKeyId: "AKIA4R3ZC4QQGHSHEQ37",
-  secretAccessKey: "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",
+  accessKeyId: "<>",
+  secretAccessKey: "<>",
   region: 'ap-south-1' 
 });
 
