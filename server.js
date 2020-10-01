@@ -8,38 +8,19 @@ const app = express();
 const Busboy = require('busboy');
 const router = express.Router();
 const upload = require("./uploadMiddleware.js"); 
-const AWS = require('aws-sdk');
 
-const BUCKET_NAME = "epanthiyabucket";
-const IAM_USER_KEY = '';
-const IAM_USER_SECRET = '';
+const AWS = require('aws-sdk');
 
 AWS.config.update({
   accessKeyId: "<>",
   secretAccessKey: "<>",
-  region: 'ap-south-1' 
+  region: "ap-southeast-1"
 });
 
 s3 = new AWS.S3({
   apiVersion: '2006-03-01',
-  Bucket: BUCKET_NAME,
-  region: 'ap-south-1' 
+  Bucket: "<>",
 });
-
-// var upload = multer({
-//   storage: multerS3({
-//       s3: s3,
-//       //acl: 'private',
-//       bucket: BUCKET_NAME,
-//       metadata: function (req, file, cb) {
-//         cb(null, { fieldName: file.fieldname });
-//       },
-//       key: function (req, file, cb) {
-//           console.log(file);
-//           cb(null, file.originalname); 
-//       }
-//   })
-// });
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -56,64 +37,63 @@ app.get('/api', function (req, res) {
   res.end('file catcher example');
 });
  
-app.post('/api/upload', upload.single('attachment'), function (req, res) {
-    if (!req.file) {
-        // if(req.fileValidationError) {
-
-        // }
-        console.log("No file received");
-        return res.send({
-          success: false
-        });
-    
-      } else {
-        const mimeType = req.file.mimetype;
-        const file_name = req.file.originalname;
-        // console.log('file received successfully');
-        // return res.send({
-        //   data : req.file,
-        //   success: true
-        // });
-
+app.post('/api/upload', upload.single('attachment'), function (request, response) {
+    if(request.file){
+        const mimeType = request.file.mimetype;
+        const file_name = Date.now() + path.extname(request.file.originalname);
         const s3Params = {
-          Bucket: "epanthiyabucket",
-          Body: req.file,
+          Bucket: "<>",
+          Body: request.file.buffer,
           Key: file_name,
           Expires: 60,
           ContentType: mimeType,
           ACL: 'public-read'
         };
-        s3.upload('putObject', s3Params, (err, data) => {
+        s3.upload(s3Params, (err, data) => {
           if(err){
-            console.log(err);
-            return res.end();
+            response.status(400).json({
+              type: "error",
+              message : err
+            });
+            return 
+          }else{
+            return response.status(200).json({
+              type : 'success',
+              message:  {
+                'file_path' : data.Location,
+                'file_name' : file_name
+              }
+            });
           }
-          const returnData = {
-            signedRequest: data,
-            url: `https://epanthiyabucket.s3.amazonaws.com/file_name`
-          };
-          res.write(JSON.stringify(returnData));
-          res.end();
         });
-
-
-      }
+    }else{
+      response.status(400).json({
+        type: "error",
+        message : "Something went wrong please try again"
+      });
+      return
+    }
 });
 
-app.post('/api/upload2', function (req, res, next) {
-  const fileContent = fs.readFileSync('./uploads/shwoon.png');
+app.delete('/api/delete_file', function (request, response, next) {
   const params = {
-    Bucket: BUCKET_NAME,
-    Key: 'cat.jpg', // File name you want to save as in S3
-    Body: fileContent
+    Bucket: "<>", 
+    Key: "1601539866980-logo.png"
   };
-  s3.upload(params, function(err, data) {
-    if (err) {
-        throw err;
+  s3.deleteObject(params, function(err, data) {
+    if(err){
+      response.status(400).json({
+        type: "error",
+        message : err
+      });
+      return
+    }else{
+      return response.status(200).json({
+        type : 'success',
+        message: data
+      });
     }
-    console.log(`File uploaded successfully. ${data.Location}`);
   });
-  
 });
 
 const PORT = process.env.PORT || 3000;
