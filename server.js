@@ -8,7 +8,8 @@ const app = express();
 const Busboy = require('busboy');
 const router = express.Router();
 const upload = require("./uploadMiddleware.js"); 
-
+const mongoose = require('mongoose');
+const moment = require('moment');
 const AWS = require('aws-sdk');
 
 AWS.config.update({
@@ -24,7 +25,27 @@ s3 = new AWS.S3({
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
- 
+
+mongoose.connect("mongodb+srv://posuser:85JLJ4545jk@cluster0-4ma44.mongodb.net/epanthiya", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false
+});
+
+
+mongoose.connection.on('connected', function () {  
+    console.log(`Database connection open to ${mongoose.connection.host} ${mongoose.connection.name}`);
+}); 
+
+mongoose.connection.on('error',function (err) {  
+console.log('Mongoose default connection error: ' + err);
+}); 
+
+mongoose.connection.on('disconnected', function () {  
+console.log('Mongoose default connection disconnected'); 
+});
+
+  
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
@@ -95,6 +116,7 @@ app.delete('/api/delete_file', function (request, response, next) {
     }
   });
 });
+
 
 const PORT = process.env.PORT || 3000;
  
